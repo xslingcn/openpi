@@ -1,3 +1,20 @@
+## Fork Note
+
+This fork only changes runtime dependencies for the RLinf/OpenPI path.
+
+The important change is `transformers==4.57.3`.
+
+Why this is needed:
+
+- RLinf's OpenPI compatibility layer calls `DynamicCache(config=self.config)` in `RLinf/rlinf/models/embodiment/openpi/adarms_expert.py`.
+- In the older `transformers==4.53.2` runtime, `DynamicCache` still had the older constructor shape:
+  `DynamicCache(_distributed_cache_data: Optional[Iterable] = None)`.
+- That older signature does not accept `config=...`, so the first rollout/policy call can crash with:
+  `DynamicCache.__init__() got an unexpected keyword argument 'config'`.
+
+This fork does not change model logic. It only bumps the runtime so `openpi`
+matches the current RLinf OpenPI integration.
+
 # openpi
 
 openpi holds open-source models and packages for robotics, published by the [Physical Intelligence team](https://www.physicalintelligence.company/).
